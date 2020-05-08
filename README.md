@@ -1,3 +1,8 @@
+## 前言
+Forked from easzlab/kubeasz
+
+针对阿里云 ECS 平台环境，对脚本做了一些修改，适用于云平台自建 kubernetes 环境搭建
+
 # ![kubeasz](pics/logo_kubeasz.png)
 
 项目致力于提供快速部署高可用`k8s`集群的工具, 同时也努力成为`k8s`实践、使用的参考书；基于二进制方式部署和利用`ansible-playbook`实现自动化；既提供一键安装脚本, 也可以根据`安装指南`分步执行安装各个组件。
@@ -108,3 +113,34 @@
 - [如何捐赠](docs/mixes/donate.md)
 
 Copyright 2017 gjmzj (jmgaozz@163.com) Apache License 2.0, 详情见 [LICENSE](docs/mixes/LICENSE) 文件。
+
+
+## 针对阿里云 ECS 进行的修改
+
+#### 1. 阿里云环境权限等问题:
+解决方案:
+
+(1) Ansible 默认配置需如下修改:
+
+[defaults]
+
+inventory       = /home/pplabs/ansible/hosts
+
+sudo_user      = root
+
+ask_sudo_pass = True
+
+(2) Ansible inventory 文件中,如果包含 localhost, 需进行如下配置
+
+[etcd]
+
+localhost NODE_NAME=etcd1 ansible_connection=local ansible_python_interpreter=/usr/bin/python2
+
+#### 1. /root/.kube/config 无法复制
+解决方案:
+
+(1) 将文件内容读取到变量中;
+
+(2) 将文件内容写入到 ansible 控制节点的临时文件中;
+
+(3) 将临时文件分发到各个节点中.
