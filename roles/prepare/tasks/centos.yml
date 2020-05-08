@@ -1,12 +1,18 @@
-- name: 删除centos/redhat默认安装
-  shell: "yum remove -y {{ item }}"
-  with_items:
-    - firewalld
-    - python-firewall
-    - firewalld-filesystem
-  args:
-      warn: false
-  ignore_errors: true
+#- name: 删除centos/redhat默认安装
+#  shell: "yum remove -y {{ item }}"
+#  with_items:
+#    - firewalld
+#    - python-firewall
+#    - firewalld-filesystem
+#  args:
+#      warn: false
+#  ignore_errors: true
+
+- name: 关闭 Firewalld 服务
+  service: name=firewalld state=stopped
+
+- name: 关闭 Firewalld 开机自启
+  service: name=firewalld enabled=no
 
 #- name: 添加EPEL仓库
 #  yum: name=epel-release state=present
