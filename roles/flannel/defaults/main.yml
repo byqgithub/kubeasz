@@ -8,5 +8,8 @@ DIRECT_ROUTING: false
 #flanneld_image: "quay.io/coreos/flannel:v0.10.0-amd64"
 flanneld_image: "easzlab/flannel:v0.11.0-amd64"
 
+# 离线安装 flannel image
+INSTALL_SOURCE: "online"
+
 # 离线镜像tar包
 flannel_offline: "flannel_v0.11.0-amd64.tar"

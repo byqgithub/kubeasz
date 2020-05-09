@@ -1,21 +1,27 @@
 - name: 创建flannel 相关目录
-  file: name={{ item }} state=directory
+  file: name={{ item }} state=directory mode=0777
   with_items:
   - /etc/cni/net.d
+  - /etc/kube-flannel/
+  - /run/flannel
   - /opt/kube/images
   - /opt/kube/kube-system
 
 - name: 配置 flannel DaemonSet yaml文件
   template: src=kube-flannel.yaml.j2 dest=/opt/kube/kube-system/flannel.yaml
-    
+
 - name: 下载flannel cni plugins
-  copy: src={{ base_dir }}/bin/{{ item }} dest={{ bin_dir }}/{{ item }} mode=0755
+  copy: src={{ base_dir }}/bin/{{ item }} dest={{ bin_dir }}/{{ item }} mode=0777
   with_items:
   - bridge
   - flannel
   - host-local
   - loopback
   - portmap
+
+- name: 下载 flannel 镜像
+  shell: "{{ bin_dir }}/docker pull {{ flanneld_image }}"
+  when: 'INSTALL_SOURCE == "online"'
 
 # 【可选】推送离线docker 镜像，可以忽略执行错误
 - block:
@@ -24,7 +30,7 @@
       register: download_info
       connection: local
       run_once: true
-    
+
     - name: 尝试推送离线docker 镜像（若执行失败，可忽略）
       copy: src={{ base_dir }}/down/{{ item }} dest=/opt/kube/images/{{ item }}
       when: 'item in download_info.stdout'
@@ -53,6 +59,7 @@
       - "{{ flannel_offline }}"
       ignore_errors: true
       when: "item in image_info.stdout and CONTAINER_RUNTIME == 'containerd'"
+  when: 'INSTALL_SOURCE == "offline"'
 
 # 只需单节点执行一次
 - name: 运行 flannel网络

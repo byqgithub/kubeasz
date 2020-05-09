@@ -42,3 +42,6 @@ MASTER_CHG: "no"
 
 # 离线安装 haproxy (offline|online)
 INSTALL_SOURCE: "online"
+
+# Pause 镜像版本
+PAUSE_VERION: "3.2"

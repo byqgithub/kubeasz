@@ -33,17 +33,21 @@
 - block:
   - name: 生成 basic-auth 随机密码
     shell: 'PWD=`date +%s%N|md5sum|head -c16`; \
-	sed -i "s/_pwd_/$PWD/g" {{ base_dir }}/roles/kube-master/defaults/main.yml; \
-	echo $PWD;'
+    sed -i "s/_pwd_/$PWD/g" {{ base_dir }}/roles/kube-master/defaults/main.yml; \
+    echo $PWD;'
     connection: local
     register: TMP_PASS
     run_once: true
-    
+
   - name: 设置 basic-auth 随机密码
     set_fact: BASIC_AUTH_PASS={{ TMP_PASS.stdout }}
+
+  - debug:
+      msg: "basic-auth password: {{ TMP_PASS.stdout }}"
+
   when: 'BASIC_AUTH_ENABLE == "yes" and BASIC_AUTH_PASS == "_pwd_"'
   tags: restart_master
-  
+
 - name: 创建 basic-auth.csv
   template: src=basic-auth.csv.j2 dest={{ ca_dir }}/basic-auth.csv
   when: 'BASIC_AUTH_ENABLE == "yes"'
@@ -74,7 +78,7 @@
 
 - name: 启动 master 服务
   shell: "systemctl daemon-reload && systemctl restart kube-apiserver && \
-	systemctl restart kube-controller-manager && systemctl restart kube-scheduler"
+    systemctl restart kube-controller-manager && systemctl restart kube-scheduler"
   tags: upgrade_k8s, restart_master
 
 - name: 以轮询的方式等待master服务启动完成

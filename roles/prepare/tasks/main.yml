@@ -44,7 +44,8 @@
       file: path={{ item }} mode=0777 recurse=yes
       with_items:
         - /root/.kube/
-        - "{{ base_dir }}/.cluster/"
+        - "{{ base_dir }}/bin/"
+        - "{{ base_dir }}/down/"
 
     - name: 分发证书相关
       copy: src={{ base_dir }}/.cluster/ssl/{{ item }} dest={{ ca_dir }}/{{ item }}

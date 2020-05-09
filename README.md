@@ -121,22 +121,19 @@ Copyright 2017 gjmzj (jmgaozz@163.com) Apache License 2.0, 详情见 [LICENSE](d
 解决方案:
 
 (1) Ansible 默认配置需如下修改:
-
+```bash
 [defaults]
 
-inventory       = /home/pplabs/ansible/hosts
+inventory = /home/pplabs/ansible/hosts
 
-sudo_user      = root
+sudo_user = root
 
 ask_sudo_pass = True
+```
 
-(2) Ansible inventory 文件中,如果包含 localhost, 需进行如下配置
+(2) Ansible inventory 文件中,涉及到 kubernets 相关节点, 不要包含 localhost, 可用本机 IP 代替
 
-[etcd]
-
-localhost NODE_NAME=etcd1 ansible_connection=local ansible_python_interpreter=/usr/bin/python2
-
-#### 1. /root/.kube/config 无法复制
+#### 2. /root/.kube/config 无法复制
 解决方案:
 
 (1) 将文件内容读取到变量中;
@@ -144,3 +141,51 @@ localhost NODE_NAME=etcd1 ansible_connection=local ansible_python_interpreter=/u
 (2) 将文件内容写入到 ansible 控制节点的临时文件中;
 
 (3) 将临时文件分发到各个节点中.
+
+#### 3. 需要开放的端口
+
+master 节点需要对各个 node 节点尽可能地开放端口，对外选择性开放端口
+
+#### 4. 无法下载 docker image
+
+修改 docker 配置 etc/docker/daemon.json
+```bash
+{
+  "registry-mirrors": [
+    "https://docker.mirrors.ustc.edu.cn",
+    "http://hub-mirror.c.163.com"
+  ],
+  "max-concurrent-downloads": 10,
+  "log-driver": "json-file",
+  "log-level": "warn",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+    },
+  "data-root": "/var/lib/docker"
+}
+```
+
+#### 5. 仍然无法下载 docker image
+
+解决方案:
+
+1. 从阿里云镜像源下载资源;
+ 
+2. 修改镜像 tag.
+
+以 pause-amd64 镜像为例：
+
+```bash
+docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.2
+
+docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:3.2 mirrorgooglecontainers/pause-amd64:3.2
+```
+
+#### 6. 集群各个节点需要的 docker 镜像:
+
+镜像列表:
+
+1. pause-amd64;
+
+2. 网络插件镜像: flannel, calico.

@@ -194,7 +194,7 @@ function get_offline_image() {
 
   imageDir=/etc/ansible/down
   [[ -d "$imageDir" ]] || { echo "[ERROR] $imageDir not existed!"; exit 1; }
-  
+
   echo -e "[INFO] \033[33mdownloading offline images\033[0m"
 
   if [[ ! -f "$imageDir/calico_$calicoVer.tar" ]];then
@@ -224,7 +224,8 @@ function get_offline_image() {
     docker save -o ${imageDir}/metrics-server_${metricsVer}.tar mirrorgooglecontainers/metrics-server-amd64:${metricsVer}
   fi
   if [[ ! -f "$imageDir/pause_$pauseVer.tar" ]];then
-    docker pull mirrorgooglecontainers/pause-amd64:${pauseVer} && \
+    docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:${pauseVer} && \
+    docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:${pauseVer} mirrorgooglecontainers/pause-amd64:${pauseVer} && \
     docker save -o ${imageDir}/pause_${pauseVer}.tar mirrorgooglecontainers/pause-amd64:${pauseVer}
     /bin/cp -u "${imageDir}/pause_${pauseVer}.tar" "${imageDir}/pause.tar"
   fi

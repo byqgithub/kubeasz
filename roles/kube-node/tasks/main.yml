@@ -16,6 +16,9 @@
   - loopback
   tags: upgrade_k8s
 
+- name: 下载 pause 镜像
+  shell: "{{ bin_dir }}/docker pull registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:{{ PAUSE_VERION }} && {{ bin_dir }}/docker tag registry.cn-hangzhou.aliyuncs.com/google_containers/pause-amd64:{{ PAUSE_VERION }} mirrorgooglecontainers/pause-amd64:{{ PAUSE_VERION }}"
+
 # 每个 node 节点运行 haproxy 连接到多个 apiserver
 - import_tasks: node_lb.yml
   when: "inventory_hostname not in groups['kube-master']"

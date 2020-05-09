@@ -54,7 +54,7 @@
     - "/root/.kube/config"
     - "/etc/kubernetes/kubelet.kubeconfig"
     - "/etc/kubernetes/kube-proxy.kubeconfig"
-  
+
   - name: restart kube-node service
     service: name={{ item }} state=restarted
     with_items:

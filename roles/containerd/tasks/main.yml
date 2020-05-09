@@ -2,6 +2,13 @@
   shell: 'systemctl status docker|grep Active || echo "NOT FOUND"'
   register: docker_status
 
+- name: docker 和 ctr 建立软连接
+  file: src=/usr/bin/{{ item }} dest={{ bin_dir }}/{{ item }} state=link mode=0777 force=yes
+  with_items:
+    - docker
+    - ctr
+  when: '"running" in docker_status.stdout'
+
 - name: fail info1
   fail: msg="Docker already installed!"
   when: '"running" in docker_status.stdout'

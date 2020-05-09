@@ -1,11 +1,11 @@
 # 'etcd' cluster should have odd member(s) (1,3,5,...)
 # variable 'NODE_NAME' is the distinct name of a member in 'etcd' cluster
 [etcd]
-localhost NODE_NAME=etcd1 ansible_connection=local ansible_python_interpreter=/usr/bin/python2
+172.16.5.255 NODE_NAME=etcd1 ansible_python_interpreter=/usr/bin/python2
 
 # master node(s)
 [kube-master]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2
+172.16.5.255 ansible_python_interpreter=/usr/bin/python2
 
 # work node(s)
 [kube-node]
@@ -25,9 +25,12 @@ localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2
 
 # [optional] ntp server for the cluster
 [chrony]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2
+172.16.5.255 ansible_python_interpreter=/usr/bin/python2
 172.16.5.250
 172.16.5.252
+
+[controller]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2
 
 [all:vars]
 # --------- Main Variables ---------------

@@ -12,7 +12,7 @@ MASTER_CERT_HOSTS:
 
 # apiserver 基础认证（用户名/密码）配置，详见 master 节点文件‘/etc/kubernetes/ssl/basic-auth.csv’
 # 是否启用基础认证 yes/no
-BASIC_AUTH_ENABLE: 'no'
+BASIC_AUTH_ENABLE: 'yes'
 # 用户名：
 BASIC_AUTH_USER: 'admin'
 # 密码：初次运行时会生成随机密码

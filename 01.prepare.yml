@@ -9,7 +9,8 @@
   - { role: chrony, when: "groups['chrony']|length > 0" }
 
 # to create CA, kubeconfig, kube-proxy.kubeconfig etc.
-- hosts: localhost
+- hosts:
+  - controller
   roles:
   - deploy
 
